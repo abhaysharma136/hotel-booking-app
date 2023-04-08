@@ -68,3 +68,22 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+
+
+Login Credentials
+
+there are 2 users created in the database 
+
+user1=>
+email:user1@gmail.com
+password:password@123
+user2=>
+email:user2@gmail.com,
+password:password@123
+
+
+backend is deployed online on vercel. 
+
+After login simply select a date and search hotel. then book a hotel and find all the booking details on the booking page.
+
