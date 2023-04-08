@@ -1,12 +1,8 @@
-import { Route, Routes, useNavigate } from "react-router-dom";
-import "./App.css";
-import { LandingPage } from "./LandingPage";
-import { HomePage } from "./HomePage";
-import { Login } from "./Login";
-import { UserBooking } from "./UserBooking";
-import { HotelDetails } from "./HotelDetails";
+import { useParams } from "react-router-dom";
+import { API } from "./global";
+import { useEffect, useState } from "react";
 
-function App() {
+export function UserBooking() {
   // const hotels = [
   //   {
   //     id: "1",
@@ -109,39 +105,53 @@ function App() {
   //       "https://media-cdn.tripadvisor.com/media/photo-s/05/79/73/ec/bella-vista-resort.jpg",
   //   },
   // ];
+  const { userIdS } = useParams();
 
-  const navigate = useNavigate();
-
-  let isLogin = localStorage.getItem("isLogin");
-
-  function logOutUser() {
-    localStorage.removeItem("isLogin");
-    localStorage.removeItem("id");
-    navigate("/");
+  const details = {
+    userId: userIdS,
+  };
+  let [hotels, setHotels] = useState([]);
+  function getBookingDetails() {
+    let res = fetch(`${API}/hotels/bookingDetails`, {
+      method: "POST",
+      body: JSON.stringify(details),
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+    res.then((data) => data.json()).then((hotel) => setHotels(hotel));
   }
-  let id = localStorage.getItem("id");
 
+  useEffect(() => {
+    getBookingDetails();
+  }, []);
   return (
-    <div className="App">
-      <div className="NavBar">
-        <div>GAST</div>
-        <div className="loginButtonDiv">
-          {isLogin ? <button onClick={() => logOutUser()}>LogOut</button> : ""}
-          <div onClick={() => navigate(`/currentBookings/${id}`)}>
-            {" "}
-            booking History
-          </div>
-        </div>
-      </div>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/home" element={<HomePage userId={id} />} />
-        <Route path="/hotels/:hotelId" element={<HotelDetails />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/currentBookings/:userIdS" element={<UserBooking />} />
-      </Routes>
+    <div>
+      <h1>All Your Bookings available here</h1>
+      {hotels.map((ele, index) => (
+        <DisplayBookings hotelData={ele} key={index} />
+      ))}
     </div>
   );
 }
-
-export default App;
+function DisplayBookings({ hotelData }) {
+  return (
+    <div className="hotelBookingContainer">
+      <img
+        src={hotelData.image}
+        alt={hotelData.name}
+        width="300px"
+        height="400px"
+      />
+      <div className="hotelSpecsDiv">
+        <h4>{hotelData.name}</h4>
+        <h4>Rating:{hotelData.hotelType}</h4>
+        <h4>Contact:{hotelData.phonenumber}</h4>
+        <h4>Price:{hotelData.pricePerRoomPernight}</h4>
+        <div className="viewDetailsDiv">
+          <p>bookingDate:{hotelData.booking[0].checkin}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
